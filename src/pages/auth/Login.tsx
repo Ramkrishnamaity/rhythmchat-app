@@ -1,84 +1,83 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { postRequest } from '../../lib/utils/HttpsClient'
-import { endpoints } from '../../lib/utils/Endpoint'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { postRequest } from "../../lib/utils/HttpsClient";
+import { endpoints } from "../../lib/utils/Endpoint";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { GoEyeClosed, GoEye } from 'react-icons/go';
+import { GoEyeClosed, GoEye } from "react-icons/go";
 import { ImSpinner9 } from "react-icons/im";
-import { LoginFormData, UserLoginResponse } from '../../lib/types/auth';
-import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setProfile, setToken } from '../../redux/slices/user';
-import ConfirmationModal from '../../components/modal/ConfirmationModal';
+import { LoginFormData, UserLoginResponse } from "../../lib/types/auth";
+import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setProfile, setToken } from "../../redux/slices/user";
+import ConfirmationModal from "../../components/modal/ConfirmationModal";
 import { FaUser, FaLock } from "react-icons/fa";
-import { CommonResponseType } from '../../lib/types';
-import InternetStatusCard from '../../components/card/InternetStatusCard';
+import { CommonResponseType } from "../../lib/types";
+import InternetStatusCard from "../../components/card/InternetStatusCard";
 
 const Login: React.FC = () => {
 
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const { online } = useAppSelector(state => state.internet)
-  const [disable, setDisable] = useState<boolean>(false)
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { online } = useAppSelector(state => state.internet);
+  const [disable, setDisable] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '', password: ''
-  })
+    email: "", password: ""
+  });
 
   function clickHandler() {
-    setShowPassword((prev) => !prev)
+    setShowPassword((prev) => !prev);
   }
 
   async function forgetPassword() {
-    const output: CommonResponseType = await postRequest(endpoints.resetPassword, { email: formData.email })
-    const response = output.data
-    if (response.status) toast.success(response.message)
-    else toast.error(response.message)
-    setFormData({ email: '', password: '' })
+    const output: CommonResponseType = await postRequest(endpoints.resetPassword, { email: formData.email });
+    const response = output.data;
+    if (response.status) toast.success(response.message);
+    else toast.error(response.message);
+    setFormData({ email: "", password: "" });
   }
 
   function openUIModal() {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (formData.email === '' || !regex.test(formData.email)) {
-      toast.error("Enter an valid email..!")
-      return
+    if (formData.email === "" || !regex.test(formData.email)) {
+      toast.error("Enter an valid email..!");
+      return;
     }
-    setOpenModal(true)
+    setOpenModal(true);
   }
 
   function changeHandler(e: ChangeEvent<HTMLInputElement>) {
     setFormData((prev) => {
-      return { ...prev, [e.target.name]: e.target.value }
-    })
+      return { ...prev, [e.target.name]: e.target.value };
+    });
   }
 
   async function login(e: FormEvent<HTMLFormElement>) {
     try {
-      e.preventDefault()
+      e.preventDefault();
 
-      setDisable(true)
-      const response: CommonResponseType<UserLoginResponse> = await postRequest(endpoints.login, formData)
+      setDisable(true);
+      const response: CommonResponseType<UserLoginResponse> = await postRequest(endpoints.login, formData);
       if (response.status) {
         //store in browser
-        localStorage.setItem('token', response.data?.token ?? '')
-        localStorage.setItem('profile', JSON.stringify(response.data?.profile ?? ''))
+        localStorage.setItem("token", response.data?.token ?? "");
+        localStorage.setItem("profile", JSON.stringify(response.data?.profile ?? ""));
         //store in redux
-        dispatch(setToken(response.data?.token ?? ''))
-        dispatch(setProfile(response.data?.profile ?? null))
+        dispatch(setToken(response.data?.token ?? ""));
+        dispatch(setProfile(response.data?.profile ?? null));
 
-        toast.success(response.message)
-        navigate('/dashboard')
+        toast.success(response.message);
+        navigate("/dashboard");
       } else {
-        setDisable(false)
-        setFormData({ email: '', password: '' })
-        toast.error(response.message)
+        setDisable(false);
+        setFormData({ email: "", password: "" });
+        toast.error(response.message);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
-
 
   return (
     <div className='boxshadow bg-wrapper w-full xs:my-5 mx-auto xs:rounded-3xl rounded-none text-lowBlack xs:h-max h-[100vh] xs:w-[400px] px-5 py-10 tracking-widest text-md space-y-8'>
@@ -103,7 +102,7 @@ const Login: React.FC = () => {
                   <div className='absolute top-[22px] left-3'>
                     <FaLock />
                   </div>
-                  <input type={showPassword ? 'text' : 'password'} placeholder='Password' name='password' readOnly={disable} onChange={changeHandler} value={formData.password}
+                  <input type={showPassword ? "text" : "password"} placeholder='Password' name='password' readOnly={disable} onChange={changeHandler} value={formData.password}
                     className='text-[black] btnInnershadow w-full h-full rounded-md px-10 shadow-md outline-none text-sm tracking-wider'
                     required={true} />
                   <span className='absolute right-3 bottom-1' onClick={clickHandler}>
@@ -132,7 +131,7 @@ const Login: React.FC = () => {
             </div>
             {/* modal */}
             {
-              openModal && (<ConfirmationModal desc={`forget this Account`} btnText='Confirm' triggerFunction={forgetPassword} setOpenModal={setOpenModal} />)
+              openModal && (<ConfirmationModal desc={"forget this Account"} btnText='Confirm' triggerFunction={forgetPassword} setOpenModal={setOpenModal} />)
             }
           </>
         ) : (
@@ -140,7 +139,7 @@ const Login: React.FC = () => {
         )
       }
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

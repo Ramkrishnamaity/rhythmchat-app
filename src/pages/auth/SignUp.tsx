@@ -1,91 +1,91 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { postRequest } from '../../lib/utils/HttpsClient'
-import { endpoints } from '../../lib/utils/Endpoint'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { postRequest } from "../../lib/utils/HttpsClient";
+import { endpoints } from "../../lib/utils/Endpoint";
+import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { GoEyeClosed, GoEye } from 'react-icons/go';
+import { GoEyeClosed, GoEye } from "react-icons/go";
 import { ImSpinner9 } from "react-icons/im";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-import { SignUpFormData } from '../../lib/types/auth';
-import { toast } from 'react-toastify';
-import { FaLock, FaUser } from 'react-icons/fa';
-import { CommonResponseType } from '../../lib/types';
-import { useAppSelector } from '../../redux/hooks';
-import InternetStatusCard from '../../components/card/InternetStatusCard';
+import { SignUpFormData } from "../../lib/types/auth";
+import { toast } from "react-toastify";
+import { FaLock, FaUser } from "react-icons/fa";
+import { CommonResponseType } from "../../lib/types";
+import { useAppSelector } from "../../redux/hooks";
+import InternetStatusCard from "../../components/card/InternetStatusCard";
 
 const SignUp: React.FC = () => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<SignUpFormData>({
-        firstName: '', lastName: '', email: '', password: '', otp: ''
-    })
-    const { online } = useAppSelector(state => state.internet)
-    const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [isOtpSent, setIsOtpSent] = useState<boolean>(false)
-    const [disable, setDisable] = useState<boolean>(false)
+        firstName: "", lastName: "", email: "", password: "", otp: ""
+    });
+    const { online } = useAppSelector(state => state.internet);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [isOtpSent, setIsOtpSent] = useState<boolean>(false);
+    const [disable, setDisable] = useState<boolean>(false);
 
     function clickHandler() {
-        setShowPassword((prev) => !prev)
+        setShowPassword((prev) => !prev);
     }
 
     function changeHandler(e: ChangeEvent<HTMLInputElement>) {
         setFormData((prev) => {
-            return { ...prev, [e.target.name]: e.target.value }
-        })
+            return { ...prev, [e.target.name]: e.target.value };
+        });
     }
 
     async function signup(e: FormEvent<HTMLFormElement>) {
         try {
-            e.preventDefault()
+            e.preventDefault();
             if (isOtpSent) {
-                setDisable(true)
+                setDisable(true);
 
-                const response: CommonResponseType = await postRequest(endpoints.signup, formData)
+                const response: CommonResponseType = await postRequest(endpoints.signup, formData);
                 if (response.status) {
-                    toast.success(response.message)
-                    navigate('/login')
+                    toast.success(response.message);
+                    navigate("/login");
                 } else {
-                    setDisable(false)
-                    setIsOtpSent(false)
-                    setFormData({ firstName: '', lastName: '', email: '', password: '', otp: '' })
-                    toast.error(response.message)
+                    setDisable(false);
+                    setIsOtpSent(false);
+                    setFormData({ firstName: "", lastName: "", email: "", password: "", otp: "" });
+                    toast.error(response.message);
                 }
             } else {
-                toast.error("Network Error..!")
-                return
+                toast.error("Network Error..!");
+                return;
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
     async function sendOtp() {
         try {
             if (formData.email === "") {
-                toast.error("Email field is required..!")
+                toast.error("Email field is required..!");
             } else {
                 const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 if (!regex.test(formData.email)) {
-                    toast.error("Enter an valid email..!")
+                    toast.error("Enter an valid email..!");
                 } else {
-                    setDisable(true)
-                    const response: CommonResponseType = await postRequest(endpoints.requestotp, { email: formData.email })
+                    setDisable(true);
+                    const response: CommonResponseType = await postRequest(endpoints.requestotp, { email: formData.email });
                     if (response.status) {
-                        setIsOtpSent(true)
- setDisable(false)
-                                               toast.success(response.message)
+                        setIsOtpSent(true);
+ setDisable(false);
+                                               toast.success(response.message);
                     } else {
-                        setDisable(false)
+                        setDisable(false);
                         setFormData((prev) => {
-                            return { ...prev, email: '' }
-                        })
-                        toast.error(response.message)
+                            return { ...prev, email: "" };
+                        });
+                        toast.error(response.message);
                     }
                 }
 
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
@@ -111,7 +111,7 @@ const SignUp: React.FC = () => {
                                     <div className='absolute top-[14px] left-3'>
                                         <FaLock />
                                     </div>
-                                    <input type={showPassword ? 'text' : 'password'} placeholder="Password" readOnly={disable} name='password' value={formData.password}
+                                    <input type={showPassword ? "text" : "password"} placeholder="Password" readOnly={disable} name='password' value={formData.password}
                                         onChange={changeHandler}
                                         className='text-[black] btnInnershadow w-full h-full rounded-md px-10 outline-none text-sm tracking-wider'
                                         required={true} />
@@ -184,11 +184,8 @@ const SignUp: React.FC = () => {
                 )
             }
         </div>
-    )
-}
+    );
+};
 
-export default SignUp
-
-
-
+export default SignUp;
 

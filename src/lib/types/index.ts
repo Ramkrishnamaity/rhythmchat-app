@@ -1,5 +1,4 @@
-import { ReactNode } from "react"
-
+import { ReactNode } from "react";
 
 export type CommonResponseType<T = any> = {
     status: boolean
@@ -8,7 +7,6 @@ export type CommonResponseType<T = any> = {
     error?: any
     totalPage?: number
 }
-
 
 export type CommonPropsType = {
     children: ReactNode

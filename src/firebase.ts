@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app"
-import { getMessaging } from "firebase/messaging"
+import { initializeApp } from "firebase/app";
+import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAW2FXmhQpZZ6YM-QGIj_llw5agA8bCJ0o",
@@ -11,8 +11,7 @@ const firebaseConfig = {
   measurementId: "G-7BQ6JF9P3W"
 };
 
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
 
-const app = initializeApp(firebaseConfig)
-const messaging = getMessaging(app)
-
-export {app, messaging}
+export {app, messaging};

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route } from "react-router-dom";
 import NotFound from "./pages/common/NotFound";
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/Dashboard";
@@ -11,18 +11,17 @@ import { setStatus } from "./redux/slices/InternetStatus";
 
 const App: React.FC = () => {
 
-  const dispatch = useAppDispatch()
-
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    window.addEventListener('online', () => {
-      dispatch(setStatus(true))
-    })
+    window.addEventListener("online", () => {
+      dispatch(setStatus(true));
+    });
 
-    window.addEventListener('offline', () => {
-      dispatch(setStatus(false))
-    })
-  })
+    window.addEventListener("offline", () => {
+      dispatch(setStatus(false));
+    });
+  });
 
   return (
     <div className='font-poppins z-0 flex justify-center items-center w-[100vw] min-h-[100vh]'>
@@ -38,6 +37,6 @@ const App: React.FC = () => {
     </div>
   );
 
-} 
+}; 
 
-export default App
+export default App;
