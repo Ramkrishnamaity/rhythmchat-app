@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scroll bar CSS */
+
+::-webkit-scrollbar {
+    width: 2px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent
+}
+
+.show-scrollbar1::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 20px;
+}
+
+.show-scrollbar2::-webkit-scrollbar-thumb {
+    background: #dde1e7;
+    border-radius: 20px;
+}
+
+
+body {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    background: #dde1e7
+}
+
+.boxshadow {
+    box-shadow: -3px -3px 7px #ffffff73, 2px 2px 5px rgba(94, 104, 121, 0.288);
+}
+
+
+.btnInnershadow {
+    box-shadow: inset 2px 2px 5px #babecc, inset -5px -5px 10px #ffffff73;
+}
+
+.btnOutershadow {
+    box-shadow: -6px -6px 10px rgba(255, 255), -5px -5px 10px #ffffff73;
+}
