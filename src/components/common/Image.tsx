@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import profile from '../../assets/profile.png'
+import React, { useState } from "react";
+import profile from "../../assets/profile.png";
 
 interface ImagePropsType {
     src: string,
@@ -9,22 +9,21 @@ interface ImagePropsType {
 
 const Image: React.FC<ImagePropsType> = ({ src, onClick, className }) => {
 
-    const [imageError, setImageError] = useState<boolean>(false)
+    const [imageError, setImageError] = useState<boolean>(false);
 
     function ErrorHandler() {
-        setImageError(true)
+        setImageError(true);
     }
-
 
     if (imageError) {
         return (
             <img src={profile} className={className} />
-        )
+        );
     }
 
     return (
         <img src={src} onClick={onClick} className={className} onError={ErrorHandler}/>
-    )
-}
+    );
+};
 
-export default Image
+export default Image;

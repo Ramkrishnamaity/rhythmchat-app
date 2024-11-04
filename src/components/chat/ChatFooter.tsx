@@ -1,10 +1,9 @@
-import React from 'react'
+import React from "react";
 import { IoIosSend } from "react-icons/io";
 import { GrAttachment } from "react-icons/gr";
 import { MdKeyboardVoice } from "react-icons/md";
 
 const ChatFooter: React.FC = () => {
-
 
   return (
     <div className='xs:pb-2 pb-1 xs:px-3 px-2 w-full h-[40px] xs:rounded-b-xl flex justify-between items-center gap-1'>
@@ -24,7 +23,7 @@ const ChatFooter: React.FC = () => {
       </div>
 
     </div>
-  )
-}
+  );
+};
 
-export default ChatFooter
+export default ChatFooter;

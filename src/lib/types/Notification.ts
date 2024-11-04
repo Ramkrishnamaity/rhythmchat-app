@@ -1,6 +1,4 @@
-import { UserType } from "./Profile"
-
-
+import { UserType } from "./Profile";
 
 export type NotificationType = {
     _id: string,

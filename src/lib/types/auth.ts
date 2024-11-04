@@ -1,5 +1,4 @@
-import { ProfileResponceType } from "./Profile"
-
+import { ProfileResponceType } from "./Profile";
 
 export type LoginFormData = {
     email: string,
@@ -13,7 +12,6 @@ export type SignUpFormData = {
     password: string
     otp: string
 }
-
 
 export type UserLoginResponse = {
     token: string,

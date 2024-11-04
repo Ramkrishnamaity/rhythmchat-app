@@ -1,28 +1,27 @@
-import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react'
-import { RxCross2 } from 'react-icons/rx'
-import { FriendsResponseType, MembersResponseType } from '../../lib/types/Profile';
-import MemberCard from '../card/MemberCard';
-import { CommonResponseType } from '../../lib/types';
-import { toast } from 'react-toastify';
-import { endpoints } from '../../lib/utils/Endpoint';
-import { getRequest, postRequest } from '../../lib/utils/HttpsClient';
-import Skeleton from '../common/Skeleton';
-import GroupDefaultImage from "../../assets/group.png"
+import React, { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { RxCross2 } from "react-icons/rx";
+import { FriendsResponseType, MembersResponseType } from "../../lib/types/Profile";
+import MemberCard from "../card/MemberCard";
+import { CommonResponseType } from "../../lib/types";
+import { toast } from "react-toastify";
+import { endpoints } from "../../lib/utils/Endpoint";
+import { getRequest, postRequest } from "../../lib/utils/HttpsClient";
+import Skeleton from "../common/Skeleton";
+import GroupDefaultImage from "../../assets/group.png";
 import { LuUpload } from "react-icons/lu";
 import { IoMdAddCircle } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
-import { FileUploadResponce } from '../../lib/types/Upload';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addConversation, setConversations } from '../../redux/slices/Conversations';
-import { ConversationsType } from '../../lib/types/Conversation';
-import { setConversationId, setConversationProfile, setProfileChange } from '../../redux/slices/Conversation';
+import { FileUploadResponce } from "../../lib/types/Upload";
+import { useAppDispatch } from "../../redux/hooks";
+import { addConversation } from "../../redux/slices/Conversations";
+import { ConversationsType } from "../../lib/types/Conversation";
+import { setConversationId, setConversationProfile, setProfileChange } from "../../redux/slices/Conversation";
 
 interface ModalPropsType {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
   setRight: React.Dispatch<React.SetStateAction<string>>
   sendRequest(data: { senderId: string; receiverId: string; }): void
 }
-
 
 const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, setRight }) => {
 
@@ -32,168 +31,167 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
     member: string[]
   }
 
-  const dispatch = useAppDispatch()
-  const [searchStr, setSearchStr] = useState<string>('')
-  const imageRef = useRef<null | HTMLInputElement>(null)
-  const [image, setImage] = useState<File | null>(null)
-  const [disable, setDisable] = useState<boolean>(false)
-  const [members, setMembers] = useState<MembersResponseType[]>([])
-  const [groupMembers, setGroupMembers] = useState<FriendsResponseType[]>([])
-  const [friends, setFriends] = useState<FriendsResponseType[]>([])
-  const [tab, setTab] = useState<string>('member')
-  const [loading, setLoading] = useState<boolean>(false)
-  const [page, setPage] = useState<number>(1)
-  const [maxPage, setMaxPage] = useState<number>(1)
-  const scrollableRef = useRef<HTMLDivElement | null>(null)
+  const dispatch = useAppDispatch();
+  const [searchStr, setSearchStr] = useState<string>("");
+  const imageRef = useRef<null | HTMLInputElement>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [disable, setDisable] = useState<boolean>(false);
+  const [members, setMembers] = useState<MembersResponseType[]>([]);
+  const [groupMembers, setGroupMembers] = useState<FriendsResponseType[]>([]);
+  const [friends, setFriends] = useState<FriendsResponseType[]>([]);
+  const [tab, setTab] = useState<string>("member");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [maxPage, setMaxPage] = useState<number>(1);
+  const scrollableRef = useRef<HTMLDivElement | null>(null);
   const [groupData, setGroupData] = useState<GroupRequestdata>({
-    name: '', description: '', member: []
-  })
-
+    name: "", description: "", member: []
+  });
 
   async function fetchMember(str: string) {
     try {
-      if (str === '') {
-        return
+      if (str === "") {
+        return;
       }
-      if (page > maxPage) return
-      setLoading(true)
-      const response: CommonResponseType<MembersResponseType[]> = await getRequest(`${endpoints.getMemebers}?str=${str}&page=${page}`)
+      if (page > maxPage) return;
+      setLoading(true);
+      const response: CommonResponseType<MembersResponseType[]> = await getRequest(`${endpoints.getMemebers}?str=${str}&page=${page}`);
       if (response.status) {
-        setLoading(false)
-        setMembers(prev => [...prev, ...response.data ?? []])
-        response.totalPage && setMaxPage(response.totalPage)
+        setLoading(false);
+        setMembers(prev => [...prev, ...response.data ?? []]);
+        response.totalPage && setMaxPage(response.totalPage);
       } else {
-        toast.error(response.message)
+        toast.error(response.message);
       }
     } catch (error) {
-      setLoading(false)
-      console.log(error)
+      setLoading(false);
+      console.log(error);
     }
   }
 
   async function fetchFriends() {
     try {
       // if(friends.length !== 0) return
-      const response: CommonResponseType<FriendsResponseType[]> = await getRequest(endpoints.getFriends)
+      const response: CommonResponseType<FriendsResponseType[]> = await getRequest(endpoints.getFriends);
       if (response.status) {
-        setFriends(response.data ?? [])
+        setFriends(response.data ?? []);
       } else {
-        toast.error(response.message)
+        toast.error(response.message);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   async function changeHandler(e: ChangeEvent<HTMLInputElement>) {
-    setPage(1)
-    setSearchStr(e.target.value)
-    setMembers([])
-    await fetchMember(e.target.value)
+    setPage(1);
+    setSearchStr(e.target.value);
+    setMembers([]);
+    await fetchMember(e.target.value);
   }
 
   function groupDataChangeHandler(e: ChangeEvent<HTMLInputElement>) {
     setGroupData((prev) => (
       { ...prev, [e.target.name]: e.target.value }
-    ))
+    ));
   }
 
   function setMemberHandler(friend: FriendsResponseType) {
-    if (disable) return
+    if (disable) return;
     setGroupData((prev) => (
       {
         ...prev,
         member: [...prev.member, friend._id]
       }
-    ))
-    setGroupMembers(prev => ([...prev, friend]))
+    ));
+    setGroupMembers(prev => ([...prev, friend]));
     setFriends((prev) => (
       prev.filter((ele) => ele._id !== friend._id)
-    ))
+    ));
   }
 
   function removeMemberHandler(friend: FriendsResponseType) {
-    if (disable) return
+    if (disable) return;
     setGroupData((prev) => (
       {
         ...prev,
         member: prev.member.filter((id) => id !== friend._id)
       }
-    ))
-    setGroupMembers(prev => (prev.filter((ele) => ele._id !== friend._id)))
+    ));
+    setGroupMembers(prev => (prev.filter((ele) => ele._id !== friend._id)));
     setFriends((prev) => (
       [...prev, friend]
-    ))
+    ));
   }
 
   function resetMemberHandler() {
     setGroupData({
-      name: '', description: '', member: []
-    })
-    setImage(null)
-    setGroupMembers([])
+      name: "", description: "", member: []
+    });
+    setImage(null);
+    setGroupMembers([]);
     setFriends((prev) => (
       [...prev, ...groupMembers]
-    ))
+    ));
   }
 
   function ChangeTab() {
-    fetchFriends()
-    setTab('group')
-    setPage(1)
-    setSearchStr('')
-    setMembers([])
+    fetchFriends();
+    setTab("group");
+    setPage(1);
+    setSearchStr("");
+    setMembers([]);
   }
 
   const handleScroll = async () => {
-    const viewWindow = scrollableRef.current?.clientHeight
-    const viewHeight = scrollableRef.current?.scrollHeight
-    const scrollTop = scrollableRef.current?.scrollTop
+    const viewWindow = scrollableRef.current?.clientHeight;
+    const viewHeight = scrollableRef.current?.scrollHeight;
+    const scrollTop = scrollableRef.current?.scrollTop;
     if (viewHeight && viewWindow && scrollTop) {
       if (scrollTop + viewWindow + 1 >= viewHeight) {
-        setPage(prev => prev + 1)
+        setPage(prev => prev + 1);
       }
     }
-  }
+  };
 
   function pickImageHandler(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
-      setImage(e.target.files[0])
+      setImage(e.target.files[0]);
     }
   }
 
   function AddImage() {
-    if (imageRef.current) imageRef.current.click()
+    if (imageRef.current) imageRef.current.click();
   }
 
   function goToChat(data: ConversationsType) {
-    dispatch(addConversation(data))
-    dispatch(setConversationId(data._id))
-    dispatch(setProfileChange(true))
+    dispatch(addConversation(data));
+    dispatch(setConversationId(data._id));
+    dispatch(setProfileChange(true));
     const profileData = {
       _id: data._id,
       isGroup: true,
-      name: data.name ?? '',
-      image: data.image ?? ''
-    }
-    dispatch(setConversationProfile(profileData))
-    setOpenModal(false)
-    setRight('Chats')
+      name: data.name ?? "",
+      image: data.image ?? ""
+    };
+    dispatch(setConversationProfile(profileData));
+    setOpenModal(false);
+    setRight("Chats");
   }
 
   async function CreateGroup(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+    e.preventDefault();
     if (groupData.member.length !== 0) {
       if (!image) {
-        toast.error('Group image is not set!')
+        toast.error("Group image is not set!");
       } else {
-        setDisable(true)
-        const formData = new FormData()
-        formData.append('file', image)
-        const response: CommonResponseType<FileUploadResponce> = await postRequest(endpoints.fileUpload, formData)
+        setDisable(true);
+        const formData = new FormData();
+        formData.append("file", image);
+        const response: CommonResponseType<FileUploadResponce> = await postRequest(endpoints.fileUpload, formData);
         if (response.status) {
-          setImage(null)
-          const imageUrl = response.data?.url ?? ''
+          setImage(null);
+          const imageUrl = response.data?.url ?? "";
           const group = {
             groupData: {
               name: groupData.name,
@@ -201,54 +199,54 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
               image: imageUrl
             },
             members: groupData.member
-          }
-          const response2: CommonResponseType<ConversationsType> = await postRequest(endpoints.createGroup, group)
+          };
+          const response2: CommonResponseType<ConversationsType> = await postRequest(endpoints.createGroup, group);
           if (response2.status) {
-            response2.data && goToChat(response2.data)
-            setDisable(false)
-            resetMemberHandler()
-            toast.success(response2.message)
+            response2.data && goToChat(response2.data);
+            setDisable(false);
+            resetMemberHandler();
+            toast.success(response2.message);
           } else {
-            setDisable(false)
-            resetMemberHandler()
-            toast.error(response2.message)
+            setDisable(false);
+            resetMemberHandler();
+            toast.error(response2.message);
           }
         } else {
-          setDisable(false)
-          resetMemberHandler()
-          toast.error(response.message)
+          setDisable(false);
+          resetMemberHandler();
+          toast.error(response.message);
         }
       }
     } else {
-      toast.error('Group must have minimum one member!')
+      toast.error("Group must have minimum one member!");
     }
   }
 
   useEffect(() => {
-    fetchMember(searchStr)
-  }, [page])
+    fetchMember(searchStr);
+  }, [page]);
 
   useEffect(() => {
     setTimeout(() => {
-      scrollableRef.current?.addEventListener('scroll', handleScroll)
-    }, 500)
-  }, [])
+      scrollableRef.current?.addEventListener("scroll", handleScroll);
+    }, 500);
+  }, []);
 
   return (
     <div className='z-10 lg:rounded-3xl rounded-none fixed overflow-auto top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-opacity-10 backdrop-blur-sm'>
       <div className='sm:h-[calc(100%-35px)] h-full w-full rounded-sm sm:w-[400px] bg-wrapper'>
-        <div className={`space-y-2 ${tab === 'group' ? 'sm:h-[60px] h-[40px]' : 'sm:h-[100px] h-[80px]'}`}>
+        <div className={`space-y-2 ${tab === "group" ? "sm:h-[60px] h-[40px]" : "sm:h-[100px] h-[80px]"}`}>
           <div className='bg-[white] text-xl flex justify-start items-center gap-5 sm:px-4 px-2 sm:py-3 py-1'>
             <RxCross2 className='cursor-pointer' onClick={() => setOpenModal(false)} />
             <div className='border border-wrapper text-center flex items-center justify-around w-full rounded-sm cursor-pointer'>
-              <p className={`text-sm py-[3px] w-full ${tab === 'member' && 'bg-wrapper'}`} onClick={() => setTab('member')}
+              <p className={`text-sm py-[3px] w-full ${tab === "member" && "bg-wrapper"}`} onClick={() => setTab("member")}
               >Member</p>
-              <p className={`text-sm py-[3px] w-full ${tab === 'group' && 'bg-wrapper'}`} onClick={ChangeTab}
+              <p className={`text-sm py-[3px] w-full ${tab === "group" && "bg-wrapper"}`} onClick={ChangeTab}
               >Group</p>
             </div>
           </div>
           {
-            tab === 'member' && (
+            tab === "member" && (
               <div className='w-[95%] mx-auto text-xs'>
                 <input type='text' placeholder='Search' value={searchStr} onChange={changeHandler}
                   className='bg-[white] w-full p-1 px-2 sm:h-[30px] h-[27px] rounded-lg outline-none text-lowBlack' />
@@ -257,7 +255,7 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
           }
         </div>
         {
-          tab === 'member' ? (
+          tab === "member" ? (
             <div ref={scrollableRef} className='sm:p-2 p-1 hide-scrollbar sm:h-[calc(100%-100px)] h-[calc(100%-80px)] overflow-y-auto' >
               {
                 members.length === 0 && !loading ? (
@@ -267,7 +265,7 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
                 ) : (
                   <>{
                     members.map((member, index) => {
-                      return (<MemberCard setRight={setRight} setOpenModal={setOpenModal} setMembers={setMembers} sendRequest={sendRequest} key={index} data={member} />)
+                      return (<MemberCard setRight={setRight} setOpenModal={setOpenModal} setMembers={setMembers} sendRequest={sendRequest} key={index} data={member} />);
                     })
                   }
                     {
@@ -318,7 +316,7 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
                               <FaPlus className='rotate-45 text-black text-md' />
                             </p>
                           </div>
-                        )
+                        );
                       })
                     }
                   </div>
@@ -339,7 +337,7 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
                             </div>
                             <IoMdAddCircle className='text-xl text-black cursor-pointer' onClick={() => setMemberHandler(friend)} />
                           </div>
-                        )
+                        );
                       })
                     }
                   </div>
@@ -356,7 +354,7 @@ const NewChatModal: React.FC<ModalPropsType> = ({ setOpenModal, sendRequest, set
 
       </div>
     </div >
-  )
-}
+  );
+};
 
-export default NewChatModal
+export default NewChatModal;

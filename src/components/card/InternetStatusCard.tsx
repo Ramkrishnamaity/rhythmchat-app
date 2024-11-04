@@ -1,5 +1,5 @@
-import React from 'react'
-import { MdSignalWifiStatusbarConnectedNoInternet } from 'react-icons/md'
+import React from "react";
+import { MdSignalWifiStatusbarConnectedNoInternet } from "react-icons/md";
 
 const InternetStatusCard: React.FC = () => {
     return (
@@ -9,7 +9,7 @@ const InternetStatusCard: React.FC = () => {
                 <p>No Internet</p>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default InternetStatusCard
+export default InternetStatusCard;

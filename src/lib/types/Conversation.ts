@@ -1,4 +1,4 @@
-import { UserType } from "./Profile"
+import { UserType } from "./Profile";
 
 type messageType = {
     user: {
@@ -25,7 +25,6 @@ export type ConversationsType = {
     createdOn: string
     updatedOn: string
 }
-
 
 export type ConversationType = {
     _id: string

@@ -1,16 +1,15 @@
-import React from 'react'
-import { useAppSelector } from '../../redux/hooks'
-import { Link, useNavigate } from 'react-router-dom'
+import React from "react";
+import { useAppSelector } from "../../redux/hooks";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
 
-  const navigate = useNavigate()
-  const { token } = useAppSelector(state => state.user)
+  const navigate = useNavigate();
+  const { token } = useAppSelector(state => state.user);
 
   if (token) {
-    navigate('/dashboard')
+    navigate("/dashboard");
   }
-
 
   return (
     <div className='boxshadow bg-wrapper w-full mx-auto xs:rounded-3xl rounded-none text-lowBlack xs:h-max h-[100vh] xs:w-[400px] px-5 py-10 tracking-widest text-md space-y-20'>
@@ -30,7 +29,7 @@ const Home: React.FC = () => {
         </Link>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

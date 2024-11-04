@@ -13,30 +13,30 @@ const initialState: SliceType = {
     profile: null,
     data: null,
     isProfileChange: false
-}
+};
 
 export const conversationSlice = createSlice({
     name: "conversation",
     initialState,
     reducers: {
         setConversationProfile(state, action: PayloadAction<ConversationProfileType>) {
-            state.profile = action.payload
+            state.profile = action.payload;
         },
         setConversationData(state, action: PayloadAction<ConversationType>) {
-            state.data = action.payload
+            state.data = action.payload;
         },
         setConversationId(state, action: PayloadAction<string>) {
-            state._id = action.payload
+            state._id = action.payload;
         },
         setProfileChange(state, action: PayloadAction<boolean>) {
-            state.isProfileChange = action.payload
+            state.isProfileChange = action.payload;
         },
         removeConversationId(state) {
-            state._id = null
+            state._id = null;
         }
     }
-})
+});
 
-export const {setConversationData, setConversationProfile, setConversationId, removeConversationId, setProfileChange} = conversationSlice.actions
+export const {setConversationData, setConversationProfile, setConversationId, removeConversationId, setProfileChange} = conversationSlice.actions;
 
-export default conversationSlice.reducer
+export default conversationSlice.reducer;

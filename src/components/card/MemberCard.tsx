@@ -1,10 +1,10 @@
-import React from 'react'
-import { MembersResponseType } from '../../lib/types/Profile'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { FaPlus } from "react-icons/fa6"
-import { FaCheck } from "react-icons/fa"
-import { FaArrowRight } from "react-icons/fa"
-import { setConversationId, setConversationProfile, setProfileChange } from '../../redux/slices/Conversation'
+import React from "react";
+import { MembersResponseType } from "../../lib/types/Profile";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { FaPlus } from "react-icons/fa6";
+import { FaCheck } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
+import { setConversationId, setConversationProfile, setProfileChange } from "../../redux/slices/Conversation";
 
 interface CardPropsType {
     sendRequest(data: { senderId: string; receiverId: string; }): void
@@ -17,48 +17,47 @@ interface CardPropsType {
 
 const MemberCard: React.FC<CardPropsType> = ({ data, sendRequest, setMembers, setRight, setOpenModal }) => {
 
-
-    const dispatch = useAppDispatch()
-    const { profile } = useAppSelector(state => state.user)
-    const conversation = useAppSelector(state => state.conversation)
-    const conversations = useAppSelector(state => state.conversations)
+    const dispatch = useAppDispatch();
+    const { profile } = useAppSelector(state => state.user);
+    const conversation = useAppSelector(state => state.conversation);
+    const conversations = useAppSelector(state => state.conversations);
 
     async function clickHandler() {
         if (data.isFriend) {
-            const conversationData = conversations.data.filter(ele => ele.user?._id === data._id)
+            const conversationData = conversations.data.filter(ele => ele.user?._id === data._id);
             if (conversationData.length === 1) {
-                dispatch(setConversationId(conversationData[0]._id))
+                dispatch(setConversationId(conversationData[0]._id));
                 if (!conversation.profile || conversation.profile._id !== data._id) {
-                    dispatch(setProfileChange(true))
+                    dispatch(setProfileChange(true));
                     const profileData = {
                         _id: data._id,
                         isGroup: false,
                         name: `${data.firstName} ${data.lastName}`,
                         image: data.image
-                    }
-                    dispatch(setConversationProfile(profileData))
+                    };
+                    dispatch(setConversationProfile(profileData));
                 }
-                setOpenModal(false)
-                setRight('Chats')
+                setOpenModal(false);
+                setRight("Chats");
             }
         } else {
             if (data.isInvited) {
-                console.log('already invited')
+                console.log("already invited");
             } else {
-                const input = { senderId: profile?._id ?? '', receiverId: data._id }
-                sendRequest(input)
+                const input = { senderId: profile?._id ?? "", receiverId: data._id };
+                sendRequest(input);
                 setMembers(prev =>
                     prev.reduce((accumulator: MembersResponseType[], member: MembersResponseType) => {
                         if (member._id === data._id) {
                             accumulator.push({
                                 ...member, isInvited: true
-                            })
+                            });
                         } else {
-                            accumulator.push(member)
+                            accumulator.push(member);
                         }
-                        return accumulator
+                        return accumulator;
                     }, [])
-                )
+                );
             }
         }
     }
@@ -75,16 +74,16 @@ const MemberCard: React.FC<CardPropsType> = ({ data, sendRequest, setMembers, se
                 </div>
             </div>
             <button onClick={clickHandler}
-                className={`${data.isFriend ? 'bg-[white] text-black' : data.isInvited ? 'bg-[white] text-black' : 'bg-blue'} xs:ml-16 ml-10 text-[white] flex items-center justify-between gap-2 text-xs xs:text-sm xs:py-2 py-1 xs:px-5 px-2 rounded-md`}>
+                className={`${data.isFriend ? "bg-[white] text-black" : data.isInvited ? "bg-[white] text-black" : "bg-blue"} xs:ml-16 ml-10 text-[white] flex items-center justify-between gap-2 text-xs xs:text-sm xs:py-2 py-1 xs:px-5 px-2 rounded-md`}>
                 {
-                    data.isFriend ? 'Continue to Chat' : data.isInvited ? 'already invited' : 'Invite'
+                    data.isFriend ? "Continue to Chat" : data.isInvited ? "already invited" : "Invite"
                 }
                 {
                     data.isFriend ? <FaArrowRight /> : data.isInvited ? <FaCheck /> : <FaPlus />
                 }
             </button>
         </div>
-    )
-}
+    );
+};
 
-export default MemberCard
+export default MemberCard;

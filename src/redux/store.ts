@@ -1,9 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit'
-import userSlice from './slices/user'
-import internetSlice from './slices/InternetStatus'
-import conversationsSlice from './slices/Conversations'
-import conversationSlice from './slices/Conversation'
-import socketSlice from './slices/Socket'
+import { configureStore } from "@reduxjs/toolkit";
+import userSlice from "./slices/user";
+import internetSlice from "./slices/InternetStatus";
+import conversationsSlice from "./slices/Conversations";
+import conversationSlice from "./slices/Conversation";
+import socketSlice from "./slices/Socket";
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +13,7 @@ export const store = configureStore({
     conversations: conversationsSlice,
     conversation: conversationSlice
   },
-})
+});
 
 export type RootState = ReturnType<typeof store.getState>
 

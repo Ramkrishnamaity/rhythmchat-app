@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import Image from '../common/Image'
+import React, { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import Image from "../common/Image";
 import { FaArrowLeft } from "react-icons/fa6";
 import { CiMenuKebab } from "react-icons/ci";
-import { removeConversationId } from '../../redux/slices/Conversation';
-
+import { removeConversationId } from "../../redux/slices/Conversation";
 
 interface PropsType {
   modifyConversations: (str: string) => void
@@ -12,13 +11,13 @@ interface PropsType {
 
 const ChatHeader: React.FC<PropsType> = ({modifyConversations}) => {
 
-  const dispatch = useAppDispatch()
-  const { profile } = useAppSelector(state => state.conversation)
+  const dispatch = useAppDispatch();
+  const { profile } = useAppSelector(state => state.conversation);
 
   const clickHandler = useCallback(() => {
-    modifyConversations('all')
-    dispatch(removeConversationId())
-  }, [])
+    modifyConversations("all");
+    dispatch(removeConversationId());
+  }, []);
 
   return (
     <div className='bg-[white] w-full h-[55px] xs:p-2 p-1 flex items-center justify-between rounded-t-xl'>
@@ -46,7 +45,7 @@ const ChatHeader: React.FC<PropsType> = ({modifyConversations}) => {
         )
       }
     </div>
-  )
-}
+  );
+};
 
-export default ChatHeader
+export default ChatHeader;
