@@ -15,7 +15,7 @@ pids
 # Dependency directories
 node_modules/
 
-public/firebase-messaging-sw.js
+firebase-messaging-sw.js
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
 
