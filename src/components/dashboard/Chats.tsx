@@ -74,7 +74,7 @@ const Chats: React.FC<ChatsPropsType> = ({ socket, isFirstLoad, setIsFirstLoad }
         } else if (str === "group") {
             setConversationData(conversations.data.filter((conversation => conversation.isGroup === true)));
         } else if (str === "favorite") {
-            setConversationData([]);
+            setConversationData(conversations.data.filter((conversation => conversation.isFavorite === true)));
         }
     }
 
@@ -84,7 +84,7 @@ const Chats: React.FC<ChatsPropsType> = ({ socket, isFirstLoad, setIsFirstLoad }
 
     useEffect(() => {
         setConversationData(conversations.data);
-    }, [conversations.data]);
+    }, [conversations]);
 
     if (conversation._id) {
         return (

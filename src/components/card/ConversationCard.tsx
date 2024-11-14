@@ -80,7 +80,7 @@ const ConversationCard: React.FC<CardPropsType> = ({ data, socket }) => {
         dispatch(setConversationId(data._id));
         if (!conversation.profile || (data.isGroup ? (conversation.profile._id !== data._id) : (conversation.profile._id !== data.user?._id))) {
             dispatch(setProfileChange(true));
-            dispatch(setConversationType(false));
+            dispatch(setConversationType(data.isFavorite));
             let profile: any = {};
             if (data.isGroup) {
                 profile = {

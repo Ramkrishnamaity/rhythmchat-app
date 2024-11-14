@@ -3,6 +3,7 @@ export const endpoints = {
     login: "/login",
     signup: "/register",
     CheckReset: "/check-reset",
+    favorite: "/favorite",
     requestotp: "/otp",
     profile: "/profile",
     setDeviceToken: "/device-token",

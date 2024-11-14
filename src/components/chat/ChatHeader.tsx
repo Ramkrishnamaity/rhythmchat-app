@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import Image from "../common/Image";
 import { IoIosArrowBack } from "react-icons/io";
@@ -8,8 +8,16 @@ import { MdBlockFlipped } from "react-icons/md";
 import { IoCallOutline } from "react-icons/io5";
 import { MdFavorite } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
-import { removeConversationId } from "../../redux/slices/Conversation";
+import { removeConversationId, setConversationType } from "../../redux/slices/Conversation";
 import { Socket } from "socket.io-client";
+import ConfirmationModal from "../modal/ConfirmationModal";
+import { CommonResponseType } from "../../lib/types";
+import { getRequest } from "../../lib/utils/HttpsClient";
+import { endpoints } from "../../lib/utils/Endpoint";
+import { toast } from "react-toastify";
+import { changeFavorite } from "../../redux/slices/Conversations";
+import ProfileModal from "../modal/ProfileModal";
+import { AnotherProfileResponceType } from "../../lib/types/Profile";
 
 interface PropsType {
   socket: Socket | null
@@ -19,8 +27,52 @@ interface PropsType {
 const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
 
   const dispatch = useAppDispatch();
-  const { profile, isFavorite } = useAppSelector(state => state.conversation);
+  const { _id, profile, isFavorite } = useAppSelector(state => state.conversation);
   const [openOptions, setOpenOptions] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openProfileModal, setOpenProfileModal] = useState<boolean>(false);
+  const [profileData, setProfileData] = useState<AnotherProfileResponceType | null>(null)
+
+  async function profileMethod() {
+    try {
+      const response: CommonResponseType<AnotherProfileResponceType> = await getRequest(`${endpoints.profile}/${profile?._id}?isGroup=${profile?.isGroup}`);
+      if (response.status) {
+        response.data && setProfileData(response.data)
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function favoriteMethod() {
+    try {
+      const response: CommonResponseType = await getRequest(`${endpoints.favorite}/${_id}`);
+      if (response.status) {
+        dispatch(changeFavorite(_id ?? ''))
+        dispatch(setConversationType(!isFavorite))
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleFavoriteBtn() {
+    setOpenOptions(false)
+    setOpenModal(true)
+  }
+
+  function handleProfileBtn() {
+    setOpenOptions(false)
+    setOpenProfileModal(true)
+  }
+  useEffect(()=> {
+    profileMethod()
+  }, [])
 
   const clickHandler = useCallback(() => {
     modifyConversations("all");
@@ -36,13 +88,17 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
               <div onClick={clickHandler} className='cursor-pointer'>
                 <IoIosArrowBack className='text-xl' />
               </div>
-              <div className='text-sm text-black font-bold uppercase sm:tracking-wider tracking-wide flex gap-3 items-center'>
+              <div onClick={handleProfileBtn} className='cursor-pointer text-sm text-black font-bold uppercase sm:tracking-wider tracking-wide flex gap-3 items-center'>
                 <div className='rounded-full cursor-pointer'>
                   <Image src={profile.image} className='w-[30px] h-[30px] object-cover rounded-full' />
                 </div>
                 <div>
-                  <p className='cursor-pointer'>{profile.name}</p>
-                  <p className='opacity-70 text-xs lowercase'>Online</p>
+                  <p >{profile.name}</p>
+                  <p className='opacity-70 text-xs lowercase'>
+                    {
+                      profile.isGroup? 'tap here for info': 'Online'
+                    }
+                  </p>
                 </div>
               </div>
             </div>
@@ -55,7 +111,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
                   <ul className="text-black text-md font-medium">
                     <li
                       className="cursor-pointer p-2 hover:bg-[white] gap-2 flex justify-start items-center"
-                    // onClick={() => handleMenuOptionClick('Block')}
+                      onClick={handleProfileBtn}
                     >
                       <RiContactsLine className="md:text-xl text-lg" />
                       Profile
@@ -69,7 +125,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[white] gap-2 flex justify-start items-center"
-                    // onClick={() => handleMenuOptionClick('Block')}
+                      onClick={handleFavoriteBtn}
                     >
                       {
                         isFavorite ? (
@@ -78,7 +134,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
                             Remove
                           </>
                         ) : (
-<>
+                          <>
                             <MdFavoriteBorder className="md:text-xl text-lg" />
                             Add
                           </>
@@ -104,6 +160,13 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
             </div>
           </>
         )
+      }
+      {/* modal */}
+      {
+        openModal && (<ConfirmationModal desc={isFavorite ? 'Are You Want to remove.' : 'Are You Want to Add.'} btnText={isFavorite ? 'Remove' : 'Add'} triggerFunction={favoriteMethod} setOpenModal={setOpenModal} />)
+      }
+      {
+        openProfileModal && (<ProfileModal handleFavoriteBtn={favoriteMethod} isFavorite={isFavorite} clickHandler={setOpenProfileModal} profileData={profileData}/>)
       }
     </div>
   );

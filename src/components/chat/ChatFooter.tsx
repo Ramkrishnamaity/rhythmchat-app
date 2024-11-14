@@ -19,6 +19,12 @@ const ChatFooter: React.FC<PropsType> = ({ socket }) => {
   const fileInput = useRef<null | HTMLInputElement>(null);
 
   function SendMessage() {
+    let newMessage = message.replace(/\s+/g, ' ').trim()
+    if(newMessage !== '') {
+      setMessage(newMessage)
+    } else return 
+
+    setOpenOptions(false)
     const data = {
       conversationId: _id,
       userId: profile?._id,
@@ -29,7 +35,7 @@ const ChatFooter: React.FC<PropsType> = ({ socket }) => {
         image: profile?.image
       },
       type: "text",
-      message
+      message: newMessage
     };
     socket?.emit("message", data);
     setMessage("");
@@ -41,20 +47,7 @@ const ChatFooter: React.FC<PropsType> = ({ socket }) => {
 
   async function enterHandler(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      const data = {
-        conversationId: _id,
-        userId: profile?._id,
-        user: {
-          _id: profile?._id,
-          firstName: profile?.firstName,
-          lastName: profile?.lastName,
-          image: profile?.image
-        },
-        type: "text",
-        message
-      };
-      socket?.emit("message", data);
-      setMessage("");
+      SendMessage()
     }
   }
 

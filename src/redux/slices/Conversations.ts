@@ -12,6 +12,20 @@ export const conversationSlice = createSlice({
         setConversations(state, action: PayloadAction<ConversationsType[]>) {
             state.data = action.payload;
         },
+        changeFavorite(state, action: PayloadAction<string>) {
+            const data = state.data.reduce((accumulator: ConversationsType[], expense: ConversationsType) => {
+                if(expense._id === action.payload) {
+                    accumulator.push({
+                        ...expense,
+                        isFavorite: !expense.isFavorite
+                    });
+                } else {
+                    accumulator.push(expense);
+                }
+                return accumulator;
+            }, []);
+            state.data = data
+        },
         addConversation(state, action: PayloadAction<ConversationsType>) {
             state.data.unshift(action.payload);
         },
@@ -34,6 +48,6 @@ export const conversationSlice = createSlice({
     }
 });
 
-export const { setConversations, addConversation, setMessageData } = conversationSlice.actions;
+export const { setConversations, changeFavorite, addConversation, setMessageData } = conversationSlice.actions;
 
 export default conversationSlice.reducer;

@@ -24,6 +24,15 @@ export type ProfileResponceType = {
     updatedOn: Date
 }
 
+export type AnotherProfileResponceType = {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    about: string;
+    image: string;
+    email: string;
+}
+
 export type MembersResponseType = {
     _id: string
     firstName: string

@@ -16,6 +16,7 @@ export type ConversationsType = {
     name?: string
     image?: string
     description?: string
+    isFavorite: boolean
     messageData: messageType
     user?: UserType
     createdOn: string
