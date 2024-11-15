@@ -17,27 +17,43 @@ import { endpoints } from "../../lib/utils/Endpoint";
 import { toast } from "react-toastify";
 import { changeFavorite } from "../../redux/slices/Conversations";
 import ProfileModal from "../modal/ProfileModal";
-import { AnotherProfileResponceType } from "../../lib/types/Profile";
+import { AnotherProfileResponceType, GroupProfileResponceType, MembersType } from "../../lib/types/Profile";
+import GroupModal from "../modal/GroupModal";
 
 interface PropsType {
   socket: Socket | null
   modifyConversations: (str: string) => void
 }
 
-const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
+const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
 
   const dispatch = useAppDispatch();
   const { _id, profile, isFavorite } = useAppSelector(state => state.conversation);
   const [openOptions, setOpenOptions] = useState<boolean>(false);
+  const [isOnline, setIsOnline] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openProfileModal, setOpenProfileModal] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<AnotherProfileResponceType | null>(null)
+  const [groupInfo, setGroupInfo] = useState<GroupProfileResponceType | null>(null)
 
   async function profileMethod() {
     try {
-      const response: CommonResponseType<AnotherProfileResponceType> = await getRequest(`${endpoints.profile}/${profile?._id}?isGroup=${profile?.isGroup}`);
+      const response: CommonResponseType<AnotherProfileResponceType | GroupProfileResponceType> = await getRequest(`${endpoints.profile}/${profile?._id}?isGroup=${profile?.isGroup}`);
       if (response.status) {
-        response.data && setProfileData(response.data)
+        if (profile?.isGroup && response.data) {
+          let groupInfo = response.data as GroupProfileResponceType
+          let admins: MembersType[] = []
+          const data = groupInfo.members.reduce((accumulator: MembersType[], expense: MembersType) => {
+            if (expense.type === "admin") {
+              admins.push(expense)
+            } else {
+              accumulator.push(expense);
+            }
+            return accumulator;
+          }, []);
+          groupInfo.members =[...admins, ...data]
+          setGroupInfo(groupInfo)
+        } else setProfileData(response.data as AnotherProfileResponceType)
       } else {
         toast.error(response.message);
       }
@@ -70,9 +86,16 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
     setOpenOptions(false)
     setOpenProfileModal(true)
   }
-  useEffect(()=> {
+  useEffect(() => {
     profileMethod()
   }, [])
+
+  useEffect(() => {
+    if (profile?.isGroup) socket?.emit('is-online-ques', profile?._id.toString())
+    socket?.on('is-online-ans', (data: boolean) => {
+      setIsOnline(data)
+    })
+  }, [socket])
 
   const clickHandler = useCallback(() => {
     modifyConversations("all");
@@ -96,7 +119,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
                   <p >{profile.name}</p>
                   <p className='opacity-70 text-xs lowercase'>
                     {
-                      profile.isGroup? 'tap here for info': 'Online'
+                      profile.isGroup ? 'tap here for info' : isOnline && 'Online'
                     }
                   </p>
                 </div>
@@ -166,7 +189,11 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations }) => {
         openModal && (<ConfirmationModal desc={isFavorite ? 'Are You Want to remove.' : 'Are You Want to Add.'} btnText={isFavorite ? 'Remove' : 'Add'} triggerFunction={favoriteMethod} setOpenModal={setOpenModal} />)
       }
       {
-        openProfileModal && (<ProfileModal handleFavoriteBtn={favoriteMethod} isFavorite={isFavorite} clickHandler={setOpenProfileModal} profileData={profileData}/>)
+        openProfileModal && (
+          !profile?.isGroup ?
+            <ProfileModal handleFavoriteBtn={favoriteMethod} isFavorite={isFavorite} clickHandler={setOpenProfileModal} profileData={profileData} /> :
+            <GroupModal handleFavoriteBtn={favoriteMethod} isFavorite={isFavorite} clickHandler={setOpenProfileModal} groupInfo={groupInfo} />
+        )
       }
     </div>
   );

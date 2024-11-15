@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setProfile, setToken } from "../../redux/slices/user";
-import { HiOutlineLogout } from "react-icons/hi";
+import { HiMiniPower } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
 import { PiChatTextLight } from "react-icons/pi";
@@ -49,27 +49,27 @@ const Sidebar: React.FC<SidebarPropsType> = ({ showNavbar, setShowNavbar, setRig
                 <div className='tracking-widest sm:mt-5 md:mt-4'>
                     <ul className='space-y-10'>
                         <li onClick={() => { setRight("Chats"); setShowNavbar(false); }}
-                            className={`${right === "Chats" && "border-l-4 text-black"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
+                            className={`${right === "Chats" && "border-l-4 text-blue"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
                             <PiChatTextLight size={22} />
                             <p>Chats</p>
                         </li>
                         <li onClick={() => { setRight("Status"); setShowNavbar(false); }}
-                            className={`${right === "Status" && "border-l-4 text-black"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
+                            className={`${right === "Status" && "border-l-4 text-blue"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
                             <CgMediaPodcast size={20} />
                             <p>Status</p>
                         </li>
                         <li onClick={() => { setRight("Calls"); setShowNavbar(false); }}
-                            className={`${right === "Calls" && "border-l-4 text-black"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
+                            className={`${right === "Calls" && "border-l-4 text-blue"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
                             <PiPhoneCallDuotone size={22} />
                             <p>Calls</p>
                         </li>
                         <li onClick={() => { setRight("Profile"); setShowNavbar(false); }}
-                            className={`${right === "Profile" && "border-l-4 text-black"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
+                            className={`${right === "Profile" && "border-l-4 text-blue"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
                             <CgProfile size={20} />
                             <p>Profile</p>
                         </li>
                         <li onClick={() => { setRight("Settings"); setShowNavbar(false); }}
-                            className={`${right === "Settings" && "border-l-4 text-black"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
+                            className={`${right === "Settings" && "border-l-4 text-blue"} cursor-pointer rounded-sm px-3 py-2 flex items-center gap-2`}>
                             <IoSettingsOutline size={20} />
                             <p>Settings</p>
                         </li>
@@ -78,8 +78,8 @@ const Sidebar: React.FC<SidebarPropsType> = ({ showNavbar, setShowNavbar, setRig
                 <div className='ml-5'>
                     <button
                         onClick={() => setOpenModal(true)}
-                        className='text-black flex items-center gap-4'>
-                        <span><HiOutlineLogout className='rotate-180' size={15} /></span>
+                        className='text-black flex items-center gap-3'>
+                        <span><HiMiniPower className='rotate-180' size={20} /></span>
                         Log out
                     </button>
                 </div>

@@ -3,7 +3,7 @@ import { HiBars3CenterLeft } from "react-icons/hi2";
 import { RxCross2 } from "react-icons/rx";
 import { useAppSelector } from "../../redux/hooks";
 import { FaPlus } from "react-icons/fa6";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import { SlBell } from "react-icons/sl";
 import NewChatModal from "../modal/NewChatModal";
 import NotificationModal from "../modal/NotificationModal";
 import { Socket } from "socket.io-client";
@@ -67,7 +67,7 @@ const Header: React.FC<DashboardHeaderProps> = ({ socket, setRight, setShowNavba
                     <p className='sm:block hidden tracking-wider text-xs'>New Chat</p>
                 </button>
                 <div className='relative cursor-pointer' onClick={() => setOpenModal2(true)}>
-                    <IoMdNotificationsOutline className='text-blue sm:text-3xl text-2xl' />
+                    <SlBell className='text-blue sm:text-2xl text-xl' />
                     <div className={`absolute sm:w-[6px] w-[5px] sm:h-[6px] h-[5px] rounded-full bg-[red] sm:top-[5px] top-1 sm:right-[5px] right-1 ${notify !== 0 ? "block" : "hidden"}`}></div>
                 </div>
             </div>

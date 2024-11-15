@@ -33,6 +33,25 @@ export type AnotherProfileResponceType = {
     email: string;
 }
 
+export type MembersType = {
+    type: string,
+    userId: string,
+    firstName: string,
+    lastName: string,
+    image: string,
+    isFriend: boolean,
+    createdOn: Date
+}
+
+export type GroupProfileResponceType = {
+    name: string,
+    image: string,
+    description: string,
+    members: MembersType[],
+    totalMembers: number
+    createdOn: Date
+}
+
 export type MembersResponseType = {
     _id: string
     firstName: string

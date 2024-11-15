@@ -13,7 +13,7 @@ const Main: React.FC = () => {
                     if (item.user._id === profile?._id) {
                         return (
                             <div key={index} className='xs:px-4 px-2 flex justify-end items-end' >
-                                <p className="bg-[white] break-words p-3 w-max max-w-[80%] rounded-l-lg rounded-t-lg">{item.message}</p>
+                                <p className="bg-[white] border border-blue break-words p-3 w-max max-w-[80%] rounded-l-lg rounded-t-lg">{item.message}</p>
                             </div>
                         );
                     } else {
@@ -22,7 +22,7 @@ const Main: React.FC = () => {
                                 <div className="w-[25px] h-[25px]">
                                     <img src={item.user.image} className='w-full h-full object-contain rounded-full' />
                                 </div>
-                                <p className="bg-[white] break-words p-3 w-max rounded-r-lg rounded-t-lg">{item.message}</p>
+                                <p className="bg-[white] border border-blue break-words p-3 w-max rounded-r-lg rounded-t-lg">{item.message}</p>
                             </div>
                         );
                     }
