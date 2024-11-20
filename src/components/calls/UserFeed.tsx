@@ -6,14 +6,14 @@ interface PropsType {
 const UserFeed: React.FC<PropsType> = ({ stream }) => {
 
     const videoRef = useRef<HTMLVideoElement>(null)
-
+ 
     useEffect(() => {
         if (videoRef.current) videoRef.current.srcObject = stream
     })
     return (
         <video
             ref={videoRef}
-            style={{ width: '200px', height: '200px' }}
+            style={{ width: '100%', height: '100%' }}
             autoPlay={true}
         />
     )
