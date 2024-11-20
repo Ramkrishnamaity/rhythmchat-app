@@ -61,7 +61,7 @@ const Settings: React.FC = () => {
   }
 
   return (
-    <div className='bg-[white] hide-scrollbar overflow-x-hidden overflow-y-auto flex flex-col md:gap-8 gap-10 relative text-lowBlack text-sm sm:w-[calc(70%-6px)] md:w-[calc(70%-10px)] md:p-5 p-3 w-full h-full rounded-xl'>
+    <div className='bg-[white] hide-scrollbar overflow-x-hidden overflow-y-auto flex flex-col md:gap-8 gap-10 relative text-lowBlack text-sm sm:w-[calc(70%-6px)] md:w-[calc(70%-10px)] md:p-5 p-3 w-full h-full xs:rounded-xl'>
       <div className='flex flex-col gap-8'>
         <h2 className='text-black text-lg'>Change Password</h2>
         <div className='lg:flex items-center lg:gap-2 lg:space-y-0 space-y-5'>

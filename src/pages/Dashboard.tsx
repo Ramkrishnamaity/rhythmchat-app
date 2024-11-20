@@ -18,6 +18,7 @@ import { endpoints } from "../lib/utils/Endpoint";
 import { addConversation, setMessageData } from "../redux/slices/Conversations";
 import { ConversationsType, MessageConversationType } from "../lib/types/Conversation";
 import { addConversationData } from "../redux/slices/Conversation";
+import { setHostByUser, setRoom } from "../redux/slices/Room";
 
 const Dashboard: React.FC = () => {
 
@@ -99,6 +100,18 @@ const Dashboard: React.FC = () => {
       dispatch(addConversationData(message));
     });
 
+    socket?.on("room-request", (roomId: string) => {
+      dispatch(setRoom(roomId));
+      dispatch(setHostByUser(false));
+      setRight("Calls")
+    });
+
+    socket?.on("room-created", (roomId: string) => {
+      dispatch(setRoom(roomId));
+      dispatch(setHostByUser(true));
+      setRight("Calls")
+    });
+
     socket?.on("connect_error", socketErrorHandler);
 
     return () => {
@@ -122,13 +135,13 @@ const Dashboard: React.FC = () => {
                 right === "Profile" && <Profile />
               }
               {
-                right === "Chats" && <Chats socket={socket} isFirstLoad={isFirstLoad} setIsFirstLoad={setIsFirstLoad} />
+                right === "Chats" && <Chats socket={socket} isFirstLoad={isFirstLoad} setIsFirstLoad={setIsFirstLoad} setRight={setRight} />
               }
               {
                 right === "Status" && <Status />
               }
               {
-                right === "Calls" && <Calls />
+                right === "Calls" && <Calls socket={socket} />
               }
               {
                 right === "Settings" && <Settings />

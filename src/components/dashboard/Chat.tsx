@@ -15,31 +15,32 @@ import ChatSkeleton from "../common/ChatSkeleton";
 interface PropsType {
     modifyConversations: (str: string) => void
     socket: Socket | null
+    setRight: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Chat: React.FC<PropsType> = ({ socket, modifyConversations }) => {
+const Chat: React.FC<PropsType> = ({ socket, modifyConversations, setRight }) => {
 
     const dispatch = useAppDispatch();
     const { _id, data, isProfileChange } = useAppSelector(state => state.conversation);
     const [loading, setLoading] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(1);
     const { token } = useAppSelector(state => state.user);
     const chatContainer = useRef<null | HTMLInputElement>(null);
 
     async function getConversation() {
         try {
             // setLoading(true);
-            const response: CommonResponseType<ConversationType> = await getRequest(`${endpoints.getConversations}/${_id}?page=${page}`, { headers: { authorization: token } });
+            const response: CommonResponseType<ConversationType> = await getRequest(`${endpoints.getConversations}/${_id}?page=1`, { headers: { authorization: token } });
             if (response.status) {
                 response.data && dispatch(setConversationData(response.data.reverse()));
                 setLoading(false);
+
+                scrollToBottom();
             } else {
                 setLoading(false);
                 toast.error(response.message);
             }
         } catch (error) {
             setLoading(false);
-            setPage(1)
             console.log(error);
         }
     }
@@ -49,6 +50,7 @@ const Chat: React.FC<PropsType> = ({ socket, modifyConversations }) => {
             chatContainer.current.scrollTop = chatContainer.current?.scrollHeight;
         }
     }
+
 
     useEffect(() => {
         if (isProfileChange || !data) {
@@ -61,9 +63,10 @@ const Chat: React.FC<PropsType> = ({ socket, modifyConversations }) => {
         scrollToBottom();
     });
 
+
     return (
         <div className='relative bg-[white] text-black text-sm sm:w-[calc(70%-6px)] md:w-[calc(70%-10px)] w-full h-full xs:rounded-xl'>
-            <ChatHeader modifyConversations={modifyConversations} socket={socket} />
+            <ChatHeader modifyConversations={modifyConversations} socket={socket} setRight={setRight} />
             <div className='xs:px-3 xs:pb-2 pb-1  h-[calc(100%-95px)]'>
                 <div ref={chatContainer} className='bg-wrapper xs:rounded-t-xl xs:rounded-b-md w-full h-full show-scrollbar3 overflow-y-auto' >
                     {

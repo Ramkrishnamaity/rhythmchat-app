@@ -119,7 +119,7 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className='bg-[white] hide-scrollbar overflow-x-hidden overflow-y-auto text-sm flex flex-col gap-8 sm:w-[calc(70%-6px)] md:w-[calc(70%-10px)] md:px-5 px-3 py-5 w-full h-full rounded-xl'>
+    <div className='bg-[white] hide-scrollbar overflow-x-hidden overflow-y-auto text-sm flex flex-col gap-8 sm:w-[calc(70%-6px)] md:w-[calc(70%-10px)] md:px-5 px-3 py-5 w-full h-full xs:rounded-xl'>
       <div className='relative border boxshadow p-1 sm:w-[150px] xs:w-[100px] w-[80px] xs:h-[100px] sm:h-[150px] h-[80px] mx-auto rounded-full cursor-pointer'>
         {
           !image ? (<Image src={profile?.image ?? ""} onClick={imageClick} className='w-full h-full object-contain rounded-full' />) :

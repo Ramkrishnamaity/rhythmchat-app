@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConversationsType, MessageConversationType } from "../lib/types/Conversation";
 import { addConversationData } from "../redux/slices/Conversation";
 import { addConversation, setMessageData } from "../redux/slices/Conversations";
@@ -46,6 +46,7 @@ export default function useSocket() {
     //         } // dotenv -e .env -- pm2 start dist/UploadServer/app.js --name upload-server
     //     ],
     // };
+
     const logout = (str?: string) => {
         str && toast.error(str);
         //clear browser
@@ -70,22 +71,23 @@ export default function useSocket() {
         } else console.log("Error in Socket: ", err);
     }
 
+    useEffect(() => {
+        socket.emit("user", profile?._id);
 
-    socket.emit("user", profile?._id);
+        socket.on("connect_error", socketErrorHandler);
 
-    socket.on("connect_error", socketErrorHandler);
+        socket.on("new-chat", (data: ConversationsType) => {
+            dispatch(addConversation(data));
+        });
 
-    socket.on("new-chat", (data: ConversationsType) => {
-        dispatch(addConversation(data));
-    });
+        socket.on("new-message-out", (message: MessageConversationType) => {
+            dispatch(setMessageData(message));
+        });
 
-    socket.on("new-message-out", (message: MessageConversationType) => {
-        dispatch(setMessageData(message));
-    });
-
-    socket.on("new-message-in", (message: MessageConversationType) => {
-        dispatch(addConversationData(message));
-    });
+        socket.on("new-message-in", (message: MessageConversationType) => {
+            dispatch(addConversationData(message));
+        });
+    }, [socket])
 
 
     return socket

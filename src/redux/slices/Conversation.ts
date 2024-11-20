@@ -28,7 +28,7 @@ export const conversationSlice = createSlice({
             state.isFavorite = action.payload;
         },
         setConversationData(state, action: PayloadAction<ConversationType>) {
-            state.data = action.payload;
+            state.data = action.payload
         },
         addConversationData(state, action: PayloadAction<MessageConversationType>) {
             if (state.data) {

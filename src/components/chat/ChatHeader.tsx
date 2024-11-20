@@ -19,13 +19,16 @@ import { changeFavorite } from "../../redux/slices/Conversations";
 import ProfileModal from "../modal/ProfileModal";
 import { AnotherProfileResponceType, GroupProfileResponceType, MembersType } from "../../lib/types/Profile";
 import GroupModal from "../modal/GroupModal";
+import { v4 as UUID } from "uuid";
+import { setHostByUser, setRoom } from "../../redux/slices/Room";
 
 interface PropsType {
   socket: Socket | null
   modifyConversations: (str: string) => void
+  setRight: React.Dispatch<React.SetStateAction<string>>
 }
 
-const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
+const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket, setRight }) => {
 
   const dispatch = useAppDispatch();
   const { _id, profile, isFavorite } = useAppSelector(state => state.conversation);
@@ -51,7 +54,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
             }
             return accumulator;
           }, []);
-          groupInfo.members =[...admins, ...data]
+          groupInfo.members = [...admins, ...data]
           setGroupInfo(groupInfo)
         } else setProfileData(response.data as AnotherProfileResponceType)
       } else {
@@ -80,6 +83,11 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
   function handleFavoriteBtn() {
     setOpenOptions(false)
     setOpenModal(true)
+  }
+
+  function handleCall() {
+    const roomId = UUID()
+    socket?.emit('room-invite', {roomId, userId: profile?._id})
   }
 
   function handleProfileBtn() {
@@ -141,7 +149,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[white] gap-2 flex justify-start items-center"
-                    // onClick={() => handleMenuOptionClick('Block')}
+                      onClick={handleCall}
                     >
                       <IoCallOutline className="md:text-xl text-lg" />
                       Call

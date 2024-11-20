@@ -17,9 +17,10 @@ interface ChatsPropsType {
     socket: Socket | null
     isFirstLoad: boolean
     setIsFirstLoad: React.Dispatch<React.SetStateAction<boolean>>
+    setRight: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Chats: React.FC<ChatsPropsType> = ({ socket, isFirstLoad, setIsFirstLoad }) => {
+const Chats: React.FC<ChatsPropsType> = ({ socket, isFirstLoad, setIsFirstLoad, setRight }) => {
 
     const dispatch = useAppDispatch();
     const [openSearch, setOpenSearch] = useState<boolean>(false);
@@ -88,7 +89,7 @@ const Chats: React.FC<ChatsPropsType> = ({ socket, isFirstLoad, setIsFirstLoad }
 
     if (conversation._id) {
         return (
-            <Chat socket={socket} modifyConversations={modifyConversations} />
+            <Chat socket={socket} modifyConversations={modifyConversations} setRight={setRight}/>
         );
     }
     return (

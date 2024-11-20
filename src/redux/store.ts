@@ -3,13 +3,13 @@ import userSlice from "./slices/user";
 import internetSlice from "./slices/InternetStatus";
 import conversationsSlice from "./slices/Conversations";
 import conversationSlice from "./slices/Conversation";
-// import socketSlice from "./slices/Socket";
+import roomSlice from "./slices/Room";
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
     internet: internetSlice,
-    // socket: socketSlice,
+    room: roomSlice,
     conversations: conversationsSlice,
     conversation: conversationSlice
   },

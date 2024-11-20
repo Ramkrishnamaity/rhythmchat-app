@@ -4,6 +4,7 @@ export type messageType = {
     conversationId: string
     user: UserType
     type: string
+    thumbnail?: string
     message: string
     createdOn: Date
     updatedOn: Date
@@ -28,6 +29,7 @@ export type ConversationType = {
     type: string
     message: string
     conversationId: string
+    thumbnail?: string
     user: UserType
     createdOn: Date
     updatedOn: Date
@@ -39,6 +41,7 @@ export type MessageConversationType = {
     message: string
     conversationId: string
     user: UserType
+    thumbnail?: string
     createdOn: Date
     updatedOn: Date
     isDeleted: boolean

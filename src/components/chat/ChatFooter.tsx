@@ -5,6 +5,11 @@ import { Socket } from "socket.io-client";
 import { useAppSelector } from "../../redux/hooks";
 import EmojiPicker from "emoji-picker-react";
 import { FaRegSmile } from "react-icons/fa";
+import { CommonResponseType } from "../../lib/types";
+import { FileUploadResponce, VideoUploadResponce } from "../../lib/types/Upload";
+import { postRequest } from "../../lib/utils/HttpsClient";
+import { endpoints } from "../../lib/utils/Endpoint";
+import { toast } from "react-toastify";
 
 interface PropsType {
   socket: Socket | null
@@ -51,9 +56,57 @@ const ChatFooter: React.FC<PropsType> = ({ socket }) => {
     }
   }
 
-  function pickImageHandler(e: ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) {
-      console.log(e.target.files);
+  async function uploadFile(file: File) {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response: CommonResponseType<FileUploadResponce | VideoUploadResponce> = await postRequest(endpoints.fileUpload, formData);
+      if (response.status && response.data) {
+
+        let data = {}
+        if(file.type.split('/')[0] === 'video') {
+          const {thumbnail, url} = response.data as VideoUploadResponce
+          data = {
+            conversationId: _id,
+            userId: profile?._id,
+            user: {
+              _id: profile?._id,
+              firstName: profile?.firstName,
+              lastName: profile?.lastName,
+              image: profile?.image
+            },
+            type: "video",
+            message: url,
+            thumbnail
+          };
+        } else {
+          const {url} = response.data as FileUploadResponce
+          data = {
+            conversationId: _id,
+            userId: profile?._id,
+            user: {
+              _id: profile?._id,
+              firstName: profile?.firstName,
+              lastName: profile?.lastName,
+              image: profile?.image
+            },
+            type: file.type.split('/')[0] !== "image"? "doc": "image",
+            message: url
+          };
+        }
+        socket?.emit("message", data);
+
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function pickFileHandler(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files[0]) {
+      await uploadFile(e.target.files[0])
     }
   }
 
@@ -86,7 +139,7 @@ const ChatFooter: React.FC<PropsType> = ({ socket }) => {
           height={350}
         />
       </div>
-      <input type="file" className="hidden" ref={fileInput} onChange={pickImageHandler}/>
+      <input type="file" className="hidden" ref={fileInput} onChange={pickFileHandler} multiple={false}/>
     </div>
   );
 };
