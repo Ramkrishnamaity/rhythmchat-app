@@ -20,7 +20,6 @@ import ProfileModal from "../modal/ProfileModal";
 import { AnotherProfileResponceType, GroupProfileResponceType, MembersType } from "../../lib/types/Profile";
 import GroupModal from "../modal/GroupModal";
 import { v4 as UUID } from "uuid";
-import { setHostByUser, setRoom } from "../../redux/slices/Room";
 
 interface PropsType {
   socket: Socket | null
@@ -28,7 +27,7 @@ interface PropsType {
   setRight: React.Dispatch<React.SetStateAction<string>>
 }
 
-const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket, setRight }) => {
+const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
 
   const dispatch = useAppDispatch();
   const { _id, profile, isFavorite } = useAppSelector(state => state.conversation);
