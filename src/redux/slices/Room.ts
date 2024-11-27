@@ -1,14 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+type defaultScreenType = {
+    name: string
+    image: string
+}
 interface roomState {
     roomId: string | null;
     hostByUser: boolean
+    defaultScreen: defaultScreenType | null
 }
 
 
 const initialState: roomState = {
     roomId: null,
-    hostByUser: false
+    hostByUser: false,
+    defaultScreen: null
 };
 
 export const roomSlice = createSlice({
@@ -21,9 +27,12 @@ export const roomSlice = createSlice({
         setHostByUser(state, action: PayloadAction<boolean>) {
             state.hostByUser = action.payload;
         },
+        setDefaultScreen(state, action: PayloadAction<defaultScreenType>) {
+            state.defaultScreen = action.payload;
+        },
     }
 });
 
-export const { setRoom, setHostByUser } = roomSlice.actions;
+export const { setRoom, setHostByUser, setDefaultScreen} = roomSlice.actions;
 
 export default roomSlice.reducer;

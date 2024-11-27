@@ -20,6 +20,7 @@ import ProfileModal from "../modal/ProfileModal";
 import { AnotherProfileResponceType, GroupProfileResponceType, MembersType } from "../../lib/types/Profile";
 import GroupModal from "../modal/GroupModal";
 import { v4 as UUID } from "uuid";
+import { setDefaultScreen } from "../../redux/slices/Room";
 
 interface PropsType {
   socket: Socket | null
@@ -31,6 +32,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
 
   const dispatch = useAppDispatch();
   const { _id, profile, isFavorite } = useAppSelector(state => state.conversation);
+  const user = useAppSelector(state => state.user);
   const [openOptions, setOpenOptions] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -85,8 +87,25 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
   }
 
   function handleCall() {
+    return
     const roomId = UUID()
-    socket?.emit('room-invite', {roomId, userId: profile?._id})
+    let profileData
+    if (profile?.isGroup) {
+      profileData = {
+        name: profile?.name,
+        image: profile?.image
+      }
+    } else {
+      profileData = {
+        name: `${user.profile?.firstName} ${user.profile?.lastName}`,
+        image: user.profile?.image
+      }
+    }
+    dispatch(setDefaultScreen({
+      name: profile?.name ?? '',
+      image: profile?.image ?? ''
+    }));
+    socket?.emit('room-invite', { roomId, isGroup: profile?.isGroup, conversationId: _id, profile: profileData })
   }
 
   function handleProfileBtn() {
@@ -148,7 +167,7 @@ const ChatHeader: React.FC<PropsType> = ({ modifyConversations, socket }) => {
                     </li>
                     <li
                       className="cursor-pointer p-2 hover:bg-[white] gap-2 flex justify-start items-center"
-                      onClick={handleCall}
+                      onClick={handleCall} 
                     >
                       <IoCallOutline className="md:text-xl text-lg" />
                       Call

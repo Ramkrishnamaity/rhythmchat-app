@@ -18,7 +18,7 @@ import { endpoints } from "../lib/utils/Endpoint";
 import { addConversation, setMessageData } from "../redux/slices/Conversations";
 import { ConversationsType, MessageConversationType } from "../lib/types/Conversation";
 import { addConversationData } from "../redux/slices/Conversation";
-import { setHostByUser, setRoom } from "../redux/slices/Room";
+import { setDefaultScreen, setHostByUser, setRoom } from "../redux/slices/Room";
 
 const Dashboard: React.FC = () => {
 
@@ -100,9 +100,10 @@ const Dashboard: React.FC = () => {
       dispatch(addConversationData(message));
     });
 
-    socket?.on("room-request", (roomId: string) => {
+    socket?.on("room-request", (roomId: string, profile: { name: string, image: string }) => {
       dispatch(setRoom(roomId));
       dispatch(setHostByUser(false));
+      dispatch(setDefaultScreen(profile));
       setRight("Calls")
     });
 
